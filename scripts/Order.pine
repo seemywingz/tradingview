@@ -1,0 +1,25 @@
+//@version=5
+indicator("Order", overlay=true)
+var orderName = input.string(defval = "Order1",title="Order Name")
+default = -1
+
+// Entry
+entry = input.float(defval=default, title="Entry")
+entry := (entry == default) ? close : entry
+
+// Stop
+stop = input.float(defval=default, title="Stop")
+stop := (stop == default) ? (close + 200.00 ): stop
+
+// Take
+take = input.float(defval=default, title="Take")
+take := (take == default) ? (close - 200.00 ): take
+
+// Color Inputs
+entryColor = input.color(defval = color.gray, title="Entry Color")
+stopColor = input.color(defval = color.maroon, title="Stop Color")
+takeColor = input.color(defval = color.teal, title="Take Color")
+
+var line takeLine = line.new(x1=bar_index, y1=take, x2=bar_index, y2=take, color=takeColor, width=1, style=line.style_dotted, extend=extend.both)
+var line stopLine = line.new(x1=bar_index, y1=stop, x2=bar_index, y2=stop, color=stopColor, width=1, style=line.style_dotted, extend=extend.both)
+var line entryLine = line.new(x1=bar_index, y1=entry, x2=bar_index, y2=entry, color=entryColor, width=1, style=line.style_dotted, extend=extend.right)

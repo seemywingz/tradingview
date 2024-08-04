@@ -1,0 +1,12 @@
+//@version=5
+indicator("NYSE Weekday Hours Highlight", overlay=true, shorttitle="NYSE 8-11 EST Weekdays")
+
+// Define the time range as a session string (adjusting EST to UTC, typically UTC-5)
+timeSession = "1200-1500:12345" // '1200-1500' corresponds to 8 AM to 11 AM EST (UTC-5), '12345' means Monday to Friday
+
+// Calculate if the current bar's time is within the defined session
+isWithinRange = time(timeframe.period, timeSession) != 0
+
+// Apply a light gray background color for the time range
+bgcolor(isWithinRange ? color.new(color.gray, 90) : na)
+

@@ -1,0 +1,21 @@
+//@version=4
+study("Candle Color Based on SMA", overlay=true)
+
+// Input for the Moving Average length
+length = input(20, minval=1, title="SMA Length")
+
+// Define the manual colors that match your current chart settings
+defaultBullishColor = color.green  // Replace with your chart's bullish color
+defaultBearishColor = color.red    // Replace with your chart's bearish color
+
+// Calculate the Simple Moving Average
+sma_value = sma(close, length)
+
+// Determine the trend
+uptrend = close > sma_value
+
+// Set the candle colors based on trend using the manual colors
+candleColor = uptrend ? defaultBullishColor : defaultBearishColor
+
+// Apply the candle color
+barcolor(candleColor)
