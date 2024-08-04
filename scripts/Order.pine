@@ -1,25 +1,39 @@
 //@version=5
 indicator("Order", overlay=true)
-var orderName = input.string(defval = "Order1",title="Order Name")
+var orderName = input.string(defval = "",title="Name")
 default = -1
 
-// Entry
-entry = input.float(defval=default, title="Entry")
-entry := (entry == default) ? close : entry
+orderGroup="Order"
+entry = input.float(defval=default, group=orderGroup, title="Entry Price")
+stop = input.float(defval=default, group=orderGroup, title="Stop Loss")
+take = input.float(defval=default, group=orderGroup, title="Take Profit")
 
-// Stop
-stop = input.float(defval=default, title="Stop")
-stop := (stop == default) ? (close + 200.00 ): stop
+entryColor = input.color(color.gray, title="Entry")
+stopColor = input.color(color.maroon, title="Entry")
+takeColor = input.color(color.aqua, title="Entry")
 
-// Take
-take = input.float(defval=default, title="Take")
-take := (take == default) ? (close - 200.00 ): take
+var line entryLine = na
+if (na(entryLine))
+    entryLine := line.new(x1=bar_index - 1, y1=entry, x2=bar_index, y2=entry, color=entryColor, width=1, style=line.style_dotted, extend=extend.both)
+else
+    line.set_xy1(entryLine, bar_index - 1, entry)
+    line.set_xy2(entryLine, bar_index, entry)
 
-// Color Inputs
-entryColor = input.color(defval = color.gray, title="Entry Color")
-stopColor = input.color(defval = color.maroon, title="Stop Color")
-takeColor = input.color(defval = color.teal, title="Take Color")
+var line stopLine = na
+if (na(stopLine))
+    stopLine := line.new(x1=bar_index - 1, y1=stop, x2=bar_index, y2=entry, color=stopColor, width=1, style=line.style_dotted, extend=extend.both)
+else
+    line.set_xy1(stopLine, bar_index - 1, stop)
+    line.set_xy2(stopLine, bar_index, stop)
 
-var line takeLine = line.new(x1=bar_index, y1=take, x2=bar_index, y2=take, color=takeColor, width=1, style=line.style_dotted, extend=extend.both)
-var line stopLine = line.new(x1=bar_index, y1=stop, x2=bar_index, y2=stop, color=stopColor, width=1, style=line.style_dotted, extend=extend.both)
-var line entryLine = line.new(x1=bar_index, y1=entry, x2=bar_index, y2=entry, color=entryColor, width=1, style=line.style_dotted, extend=extend.right)
+var line takeLine = na
+if (na(takeLine))
+    takeLine := line.new(x1=bar_index - 1, y1=take, x2=bar_index, y2=entry, color=takeColor, width=1, style=line.style_dotted, extend=extend.both)
+else
+    line.set_xy1(takeLine, bar_index - 1, take)
+    line.set_xy2(takeLine, bar_index, take)
+if barstate.islast
+    labelOffset = input.int(3, title = "Label Offset")
+    entryLabel = label.new(x=bar_index + labelOffset, y=entry, text=orderName + " Entry Price", color=color.gray, textcolor=color.gray, style=label.style_none)
+    stopLabel  = label.new(x=bar_index + labelOffset, y=stop, text=orderName + " Stop Loss", color=color.maroon, textcolor=color.maroon, style=label.style_none)
+    takeLabel  = label.new(x=bar_index + labelOffset, y=take, text=orderName + " Take Profit", color=color.teal, textcolor=color.teal, style=label.style_none)
